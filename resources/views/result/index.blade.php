@@ -54,8 +54,9 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
-                                    <th class="text-center">Nama</th>
                                     <th class="text-center">Gambar</th>
+                                    <th class="text-center">Tesseract</th>
+                                    <th class="text-center">Google Vision</th>
                                     <th class="text-center">Grafik</th>
                                     <th class="text-center">Action</th>
                                 </tr>
@@ -63,12 +64,16 @@
                             <tbody>
                                 @foreach ($recognitions as $item)
                                     <tr>
-                                        <td class="text-center">{{ $loop->iteration }}</td>
-                                        <td>{{ $item->name }}</td>
-                                        <td class="text-center col-4">
+                                        <td class="text-center col-1">{{ $loop->iteration }}</td>
+                                        <td class="text-center col-3">
                                             <img src="{{ asset('storage/' . $item->image) }}" class="img-fluid p-1"
-                                                alt="">
+                                            alt="">
                                         </td>
+                                        <td class="col-4">
+                                            <p>{{ \Illuminate\Support\Str::words($item->tesseract_text, 10, '...') }}</p>
+                                            <p>{{ $item->tesseract_time." detik" }}</p>
+                                        </td>
+                                        <td>Vision</td>
                                         <td></td>
                                         <td>
                                             <form action="/result/{{ $item->id }}" method="POST" class="d-inline">

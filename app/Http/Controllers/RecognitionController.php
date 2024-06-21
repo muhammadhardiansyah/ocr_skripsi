@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Recognition;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use thiagoalessio\TesseractOCR\TesseractOCR;
 
 class RecognitionController extends Controller
 {
@@ -34,13 +35,17 @@ class RecognitionController extends Controller
      */
     public function store(Request $request)
     {
+        // dd((new TesseractOCR())->version());
         // dd($request->file('images'));
         foreach ($request->file('images') as $image) {
             $name = $image->getClientOriginalName();
             $validatedData['name'] = $name;
             if ($image) {
-                $validatedData['image'] = $image->storeAs('ocr-images', $name);
+                $validatedData['image'] = $image->store('ocr-images');
             }
+            $tesseract = $this->recognitionProcess($validatedData['image']);
+            $validatedData['tesseract_text']= $tesseract['text'];
+            $validatedData['tesseract_time']= $tesseract['time'];
             Recognition::create($validatedData);
         }
 
@@ -86,5 +91,21 @@ class RecognitionController extends Controller
         Recognition::destroy($recognition->id);
 
         return redirect('/result');
+    }
+
+    //Tesseract Recognition Process
+    public function recognitionProcess($path)
+    {
+        $imagePath  = public_path('storage/' . $path);
+        $start      = microtime(true);
+        $text       = (new TesseractOCR($imagePath))->run();
+        $end        = microtime(true);
+        $time       = $end - $start;
+        $time       = round($time, 2);
+
+        return [
+            'text' => $text,
+            'time' => $time
+        ];
     }
 }

@@ -15,6 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('image');
+            $table->string('tesseract_text')->nullable();
+            $table->float('tesseract_time')->nullable();
+            $table->string('vision_text')->nullable();
+            $table->float('vision_time')->nullable();
             $table->timestamps();
         });
     }

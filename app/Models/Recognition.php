@@ -11,6 +11,10 @@ class Recognition extends Model
 
     protected $fillable = [
         'name',
-        'image'
+        'image',
+        'tesseract_text',
+        'tesseract_time',
+        'vision_text',
+        'vision_time'
     ];
 }
