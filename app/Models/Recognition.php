@@ -14,7 +14,9 @@ class Recognition extends Model
         'image',
         'tesseract_text',
         'tesseract_time',
+        'tesseract_percentage',
         'vision_text',
-        'vision_time'
+        'vision_time',
+        'vision_percentage',
     ];
 }

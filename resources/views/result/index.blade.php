@@ -57,7 +57,7 @@
                                     <th class="text-center">Gambar</th>
                                     <th class="text-center">Tesseract</th>
                                     <th class="text-center">Google Vision</th>
-                                    <th class="text-center">Grafik</th>
+                                    {{-- <th class="text-center">Grafik</th> --}}
                                     <th class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -67,22 +67,33 @@
                                         <td class="text-center col-1">{{ $loop->iteration }}</td>
                                         <td class="text-center col-3">
                                             <img src="{{ asset('storage/' . $item->image) }}" class="img-fluid p-1"
-                                            alt="">
+                                                alt="">
                                         </td>
-                                        <td class="col-4">
+                                        <td class="col-3">
                                             <p>{{ \Illuminate\Support\Str::words($item->tesseract_text, 10, '...') }}</p>
-                                            <p>{{ $item->tesseract_time." detik" }}</p>
+                                            <p>{{ 'Waktu proses: ' . $item->tesseract_time . ' detik' }}</p>
+                                            @if ($item->tesseract_percentage)
+                                                <p>{{ 'Tingkat kebenaran: ' . $item->tesseract_percentage . ' %' }}</p>
+                                            @endif
                                         </td>
-                                        <td>Vision</td>
-                                        <td></td>
-                                        <td>
-                                            <form action="/result/{{ $item->id }}" method="POST" class="d-inline">
+                                        <td class="col-3">
+                                            <p>{{ \Illuminate\Support\Str::words($item->vision_text, 10, '...') }}</p>
+                                            <p>{{ 'Waktu proses: ' . $item->vision_time . ' detik' }}</p>
+                                            @if ($item->vision_percentage)
+                                                <p>{{ 'Tingkat kebenaran: ' . $item->vision_percentage . ' %' }}</p>
+                                            @endif
+                                        </td>
+                                        {{-- <td></td> --}}
+                                        <td class="text-center">
+                                            <a class="btn btn-outline-info" href="/result/{{ $item->id }}"><i
+                                                    class="bi bi-eye-fill"></i></a>
+                                            <form action="/result/{{ $item->id }}" method="POST"
+                                                class="d-inline">
                                                 @method('delete')
                                                 @csrf
-                                                <button class="btn btn-outline-danger m-1 col-12"
+                                                <button class="btn btn-outline-danger"
                                                     onclick="return confirm('Are you sure?')">
                                                     <i class="bi bi-trash-fill"></i>
-                                                    <span>Hapus</span>
                                                 </button>
                                             </form>
                                         </td>
