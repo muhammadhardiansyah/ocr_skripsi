@@ -67,7 +67,7 @@
                                         <td class="text-center col-1">{{ $loop->iteration }}</td>
                                         <td class="text-center col-3">
                                             <img src="{{ asset('storage/' . $item->image) }}" class="img-fluid p-1"
-                                                alt="">
+                                                alt="" onerror="this.src='https://placehold.co/300?text=Image Not Found';">
                                         </td>
                                         <td class="col-3">
                                             <p>{{ \Illuminate\Support\Str::words($item->tesseract_text, 10, '...') }}</p>
