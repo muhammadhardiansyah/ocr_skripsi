@@ -60,14 +60,14 @@ class RecognitionController extends Controller
             $notepadPath = storage_path('/app/annotations/' . $name . '.txt');
             if (file_exists($notepadPath)) {
                 $notepadContent = file_get_contents($notepadPath);
-                $compare = $this->compareText($validatedData['vision_text'], $validatedData['tesseract_text'], $notepadContent);
+                $compare = $this->compareText($validatedData['tesseract_text'], $validatedData['vision_text'], $notepadContent);
                 $validatedData['vision_percentage'] = $compare['vision'];
                 $validatedData['tesseract_percentage'] = $compare['tesseract'];
             }
 
             Recognition::create($validatedData);
         }
-
+        session()->flash('success', 'The text has been successfully recognized!');
         return redirect('/result');
     }
 

@@ -4,6 +4,7 @@
     <link rel="stylesheet"
         href="{{ asset('/dist/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css') }}">
     <link rel="stylesheet" href="{{ asset('/dist/assets/extensions/toastify-js/src/toastify.css') }}">
+    <link rel="stylesheet" href="{{ asset('/dist/assets/extensions/sweetalert2/sweetalert2.min.css') }}">
 @endsection
 @section('container')
     <div class="page-title">
@@ -63,8 +64,9 @@
                         <form action="/result" method="post" enctype="multipart/form-data">
                             <!-- File uploader with validation -->
                             @csrf
-                            <input type="file" name="images[]" class="with-validation-filepond" required multiple data-max-file-size="5MB" data-max-files="20">
-                            <button type="submit" class="btn btn-success">
+                            <input type="file" name="images[]" class="with-validation-filepond" required multiple
+                                data-max-file-size="5MB" data-max-files="20">
+                            <button type="submit" class="btn btn-success" id="startRecognition">
                                 <i class="bi bi-plus-square mr-1"></i>
                                 <span>Submit</span>
                             </button>
@@ -96,4 +98,18 @@
     <script src="{{ asset('/dist/assets/extensions/filepond/filepond.js') }}"></script>
     <script src="{{ asset('/dist/assets/extensions/toastify-js/src/toastify.js') }}"></script>
     <script src="{{ asset('/dist/assets/static/js/pages/filepond.js') }}"></script>
+    <script src="{{ asset('/dist/assets/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script>
+        document.getElementById('startRecognition').addEventListener('click', function() {
+            // Tampilkan SweetAlert loading
+            Swal.fire({
+                title: 'Processing',
+                text: 'Please wait while the recognition is in progress',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+        });
+    </script>
 @endsection

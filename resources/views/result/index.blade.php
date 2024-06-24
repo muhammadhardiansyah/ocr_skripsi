@@ -3,27 +3,10 @@
 @section('style')
     <link rel="stylesheet" href="{{ asset('/dist/assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('/dist/assets/compiled/css/table-datatable-jquery.css') }}">
+    <link rel="stylesheet" href="{{ asset('/dist/assets/extensions/sweetalert2/sweetalert2.min.css') }}">
 @endsection
 
 @section('container')
-    @if (session()->has('success'))
-        <div class="alert alert-success alert-dismissible fade show col-12 mx-auto" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-    @if (session()->has('danger'))
-        <div class="alert alert-danger alert-dismissible fade show col-12 mx-auto" role="alert">
-            {{ session('danger') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-    @if (session()->has('warning'))
-        <div class="alert alert-warning alert-dismissible fade show col-12 mx-auto" role="alert">
-            {{ session('warning') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
@@ -118,6 +101,18 @@
                 retrieve: true,
                 responsive: true
             });
+        });
+    </script>
+    <script src="{{ asset('/dist/assets/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                Swal.fire({
+                    title: 'Success',
+                    text: '{{ session('success') }}',
+                    icon: 'success'
+                });
+            @endif
         });
     </script>
 @endsection
