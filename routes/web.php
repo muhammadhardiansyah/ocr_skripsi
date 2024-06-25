@@ -21,3 +21,5 @@ Route::get('/', function () {
 });
 
 Route::resource('/result', RecognitionController::class);
+Route::get('/result/tesseract/{id}', [RecognitionController::class, 'downloadTesseract']);
+Route::get('/result/vision/{id}', [RecognitionController::class, 'downloadVision']);

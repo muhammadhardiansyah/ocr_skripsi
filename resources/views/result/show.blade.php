@@ -56,9 +56,14 @@
                 <div class="row">
                     <div class="col-6">
                         <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title text-center">Hasil Tesseract</h5>
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title">Hasil Tesseract</h5>
+                                <a href="/result/tesseract/{{ $recognition->id }}" class="btn btn-primary icon icon-left"><i
+                                        data-feather="download"></i></a>
                             </div>
+                            {{-- <div class="card-header">
+                                <h5 class="card-title text-center">Hasil Tesseract</h5>
+                            </div> --}}
                             <div class="card-body">
                                 <div class="form-group mb-3">
                                     <textarea class="form-control" id="contentT" readonly>
@@ -71,8 +76,9 @@
                     </div>
                     <div class="col-6">
                         <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title text-center">Hasil Google Vision</h5>
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title">Hasil Google Vision</h5>
+                                <a href="/result/vision/{{ $recognition->id }}" class="btn btn-primary icon icon-left"><i data-feather="download"></i></a>
                             </div>
                             <div class="card-body">
                                 <div class="form-group mb-3">

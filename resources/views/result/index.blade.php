@@ -29,7 +29,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <span>Hasil Optical Character Recognition</span>
-                        <a href="/" class="btn btn-success icon icon-left"><i data-feather="user"></i>
+                        <a href="/" class="btn btn-success icon icon-left"><i data-feather="plus-circle"></i>
                             <span>Add OCR</span></a>
                     </div>
                     <div class="card-body">

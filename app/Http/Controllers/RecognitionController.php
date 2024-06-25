@@ -171,4 +171,32 @@ class RecognitionController extends Controller
             'vision' => round($vision, 2),
         ];
     }
+
+    //Download Tesseract Text
+    public function downloadTesseract($id)
+    {
+        $recognition = Recognition::find($id);
+        $fileName = $recognition->name.'_tesseract.txt';
+        
+        // Buat file teks sementara
+        $tempFile = tempnam(sys_get_temp_dir(), $fileName);
+        file_put_contents($tempFile, $recognition->tesseract_text);
+        
+        // Kembalikan file sebagai response unduhan
+        return response()->download($tempFile, $fileName)->deleteFileAfterSend(true);
+    }
+
+    //Download Vision Text
+    public function downloadVision($id)
+    {
+        $recognition = Recognition::find($id);
+        $fileName = $recognition->name.'_vision.txt';
+        
+        // Buat file teks sementara
+        $tempFile = tempnam(sys_get_temp_dir(), $fileName);
+        file_put_contents($tempFile, $recognition->vision_text);
+        
+        // Kembalikan file sebagai response unduhan
+        return response()->download($tempFile, $fileName)->deleteFileAfterSend(true);
+    }
 }
