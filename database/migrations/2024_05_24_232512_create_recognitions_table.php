@@ -17,9 +17,11 @@ return new class extends Migration
             $table->string('image');
             $table->text('tesseract_text')->nullable();
             $table->float('tesseract_time')->nullable();
+            $table->float('tesseract_memory')->nullable();
             $table->float('tesseract_percentage')->nullable();
             $table->text('vision_text')->nullable();
             $table->float('vision_time')->nullable();
+            $table->float('vision_memory')->nullable();
             $table->float('vision_percentage')->nullable();
             $table->timestamps();
         });

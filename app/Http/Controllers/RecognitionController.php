@@ -50,11 +50,13 @@ class RecognitionController extends Controller
             $vision = $this->visionProcess($validatedData['image']);
             $validatedData['vision_text'] = $vision['text'];
             $validatedData['vision_time'] = $vision['time'];
+            $validatedData['vision_memory'] = $vision['memory'];
 
             //tesseract ocr
             $tesseract = $this->tesseractProcess($validatedData['image']);
             $validatedData['tesseract_text'] = $tesseract['text'];
             $validatedData['tesseract_time'] = $tesseract['time'];
+            $validatedData['tesseract_memory'] = $tesseract['memory'];
 
             //compare test
             $notepadPath = storage_path('/app/annotations/' . $name . '.txt');
@@ -121,16 +123,21 @@ class RecognitionController extends Controller
     //Tesseract Recognition Process
     public function tesseractProcess($path)
     {
+        set_time_limit(0);
         $imagePath  = public_path('storage/' . $path);
-        $start      = microtime(true);
+        $startTime      = microtime(true);
+        $startMemory1    = memory_get_usage();
         $text       = (new TesseractOCR($imagePath))->run();
-        $end        = microtime(true);
-        $time       = $end - $start;
+        $endTime        = microtime(true);
+        $endMemory1      = memory_get_usage();
+        $time       = $endTime - $startTime;
         $time       = round($time, 2);
+        $memory     = ($endMemory1 - $startMemory1)/1024;
 
         return [
             'text' => $text,
-            'time' => $time
+            'time' => $time,
+            'memory'=> $memory
         ];
     }
 
@@ -140,15 +147,19 @@ class RecognitionController extends Controller
         putenv('GOOGLE_APPLICATION_CREDENTIALS=' . storage_path('/app/token.json'));
         $imagePath  = public_path('storage/' . $path);
         $imageContent = file_get_contents($imagePath);
-        $start      = microtime(true);
+        $startTime      = microtime(true);
+        $startMemory2    = memory_get_usage();
         $text       = (new ImageAnnotatorClient())->textDetection($imageContent);
-        $end        = microtime(true);
-        $time       = $end - $start;
+        $endTime        = microtime(true);
+        $endMemory2      = memory_get_usage();
+        $time       = $endTime - $startTime;
         $time       = round($time, 2);
+        $memory     = ($endMemory2 - $startMemory2)/1024;
 
         return [
             'text' => ($text->getTextAnnotations())[0]->getDescription(),
-            'time' => $time
+            'time' => $time,
+            'memory' => $memory
         ];
     }
 
@@ -198,5 +209,14 @@ class RecognitionController extends Controller
         
         // Kembalikan file sebagai response unduhan
         return response()->download($tempFile, $fileName)->deleteFileAfterSend(true);
+    }
+
+    //halaman resume
+    public function resume()
+    {
+        
+        return view('resume.index', [
+            'active' => 'dash_resume'
+        ]);
     }
 }

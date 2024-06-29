@@ -61,11 +61,11 @@
                             Maksimal gambar yang dapat diupload dalam satu kali pemrosesan yaitu 20 gambar, dan ukuran
                             maksimal setiap gambarnya adalah 5 MB.
                         </p>
-                        <form action="/result" method="post" enctype="multipart/form-data">
+                        <form action="/result" method="post" enctype="multipart/form-data" id="uploadForm">
                             <!-- File uploader with validation -->
                             @csrf
-                            <input type="file" name="images[]" class="with-validation-filepond" required multiple
-                                data-max-file-size="5MB" data-max-files="20">
+                            <input type="file" name="images[]" class="inputFile" required
+                                multiple data-max-file-size="5MB" data-max-files="20">
                             <button type="submit" class="btn btn-success" id="startRecognition">
                                 <i class="bi bi-plus-square mr-1"></i>
                                 <span>Submit</span>
@@ -100,16 +100,96 @@
     <script src="{{ asset('/dist/assets/static/js/pages/filepond.js') }}"></script>
     <script src="{{ asset('/dist/assets/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
-        document.getElementById('startRecognition').addEventListener('click', function() {
-            // Tampilkan SweetAlert loading
+        // Initialize FilePond
+        const inputElement = document.querySelector('.inputFile');
+        const pond = FilePond.create(inputElement, {
+            credits: null,
+            allowImagePreview: false,
+            allowMultiple: true,
+            allowFileEncode: false,
+            required: true,
+            acceptedFileTypes: ["image/png"],
+            fileValidateTypeDetectType: (source, type) =>
+                new Promise((resolve, reject) => {
+                    // Do custom type detection here and return with promise
+                    resolve(type)
+                }),
+            storeAsFile: true,
+        })
+
+        const startRecognitionButton = document.getElementById('startRecognition');
+
+        // Function to check validation errors and enable/disable button
+        function checkValidation() {
+            const hasError = pond.getFiles().some(file => file.status === 5);
+            const noFiles = pond.getFiles().length === 0;
+            if (noFiles || hasError) {
+                startRecognitionButton.disabled = true;
+            }
+            else {
+                startRecognitionButton.disabled = false;
+            }
+        }
+
+        // Event listeners for FilePond
+        pond.on('addfile', (error, file) => {
+            checkValidation();
+        });
+
+        pond.on('removefile', () => {
+            checkValidation();
+        });
+
+        pond.on('processfile', () => {
+            checkValidation();
+        });
+
+        pond.on('updatefiles', () => {
+            checkValidation();
+        });
+
+        // Initial check
+        checkValidation();
+
+        // Event listener for form submission
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            // Check if there are any validation errors
+            const hasError = pond.getFiles().some(file => file.status === 5);
+            const noFiles = pond.getFiles().length === 0;
+
+            if (hasError || noFiles) {
+                // Prevent form submission
+                event.preventDefault();
+                console.log('Validation error detected');
+                return;
+            }
+
+            // No validation errors, show the loading SweetAlert
             Swal.fire({
                 title: 'Processing',
                 text: 'Please wait while the recognition is in progress',
                 allowOutsideClick: false,
                 didOpen: () => {
-                    Swal.showLoading()
+                    Swal.showLoading();
                 }
             });
         });
+
+        // Update button state on load
+        window.onload = function() {
+            checkValidation();
+        };
+
+        // document.getElementById('startRecognition').addEventListener('click', function() {
+        //     // Tampilkan SweetAlert loading
+        //     Swal.fire({
+        //         title: 'Processing',
+        //         text: 'Please wait while the recognition is in progress',
+        //         allowOutsideClick: false,
+        //         didOpen: () => {
+        //             Swal.showLoading()
+        //         }
+        //     });
+        // });
     </script>
 @endsection

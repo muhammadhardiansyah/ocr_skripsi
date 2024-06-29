@@ -32,22 +32,23 @@
             <div class="col-lg-9">
                 @if ($recognition->tesseract_percentage && $recognition->vision_percentage)
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-6">
                             <div class="card">
                                 <div class="card-header">
                                     <h5 class="card-title text-center">Perbandingan Akurasi</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h5 class="card-title text-center">Tesseract</h5>
-                                            <div id="tesseract-percentage-graph"></div>
-                                        </div>
-                                        <div class="col-6">
-                                            <h5 class="card-title text-center">Google Vision</h5>
-                                            <div id="vision-percentage-graph"></div>
-                                        </div>
-                                    </div>
+                                    <div id="percentage-comparison"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title text-center">Perbandingan Memory Usage</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="memory-comparison"></div>
                                 </div>
                             </div>
                         </div>
@@ -78,7 +79,8 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="card-title">Hasil Google Vision</h5>
-                                <a href="/result/vision/{{ $recognition->id }}" class="btn btn-primary icon icon-left"><i data-feather="download"></i></a>
+                                <a href="/result/vision/{{ $recognition->id }}" class="btn btn-primary icon icon-left"><i
+                                        data-feather="download"></i></a>
                             </div>
                             <div class="card-body">
                                 <div class="form-group mb-3">
@@ -139,8 +141,10 @@
 
     <input type="hidden" id="t_percentage" value="{{ $recognition->tesseract_percentage }}">
     <input type="hidden" id="t_time" value="{{ $recognition->tesseract_time }}">
+    <input type="hidden" id="t_memory" value="{{ $recognition->tesseract_memory }}">
     <input type="hidden" id="v_percentage" value="{{ $recognition->vision_percentage }}">
     <input type="hidden" id="v_time" value="{{ $recognition->vision_time }}">
+    <input type="hidden" id="v_memory" value="{{ $recognition->vision_memory }}">
 @endsection
 
 @section('script')
@@ -224,6 +228,95 @@
 
         visionPercentageGraph.render()
 
+        // Percentage comparison
+        var v_percentage = parseFloat(document.querySelector('#v_percentage').value);
+        var t_percentage = parseFloat(document.querySelector('#t_percentage').value);
+        var percentage_comparison = {
+            annotations: {
+                position: "back",
+            },
+            dataLabels: {
+                enabled: true, // Enable data labels
+                formatter: function (val) {
+                    return val + "%"; // Format the value to 2 decimal places
+                },
+                style: {
+                    fontSize: '12px', // Adjust font size
+                    colors: ["white"] // Adjust font color
+                },
+                offsetY: 0 // Adjust position of labels above the bars
+            },
+            chart: {
+                type: "bar",
+                height: 300,
+            },
+            fill: {
+                opacity: 1,
+            },
+            plotOptions: {},
+            series: [{
+                name: "Accuracy",
+                data: [t_percentage, v_percentage],
+            }, ],
+            colors: "#435ebe",
+            xaxis: {
+                categories: [
+                    "Tesseract",
+                    "Google Vision",
+                ],
+            },
+        }
+        var percentageComparison = new ApexCharts(
+            document.querySelector("#percentage-comparison"),
+            percentage_comparison
+        )
+        percentageComparison.render()
+
+        // Memory comparison
+        var v_memory = parseFloat(document.querySelector('#v_memory').value);
+        var t_memory = parseFloat(document.querySelector('#t_memory').value);
+        var memory_comparison = {
+            annotations: {
+                position: "back",
+            },
+            dataLabels: {
+                enabled: true, // Enable data labels
+                formatter: function (val) {
+                    return val + " KB"; // Format the value to 2 decimal places
+                },
+                style: {
+                    fontSize: '12px', // Adjust font size
+                    colors: ["white"] // Adjust font color
+                },
+                offsetY: 0 // Adjust position of labels above the bars
+            },
+            chart: {
+                type: "bar",
+                height: 300,
+            },
+            fill: {
+                opacity: 1,
+            },
+            plotOptions: {},
+            series: [{
+                name: "Memory Usage",
+                data: [t_memory, v_memory],
+            }, ],
+            colors: "#435ebe",
+            xaxis: {
+                categories: [
+                    "Tesseract",
+                    "Google Vision",
+                ],
+            },
+        }
+        var memoryComparison = new ApexCharts(
+            document.querySelector("#memory-comparison"),
+            memory_comparison
+        )
+        memoryComparison.render()
+
+
         // Time comparison
         var t_time = parseFloat(document.querySelector('#t_time').value);
         var v_time = parseFloat(document.querySelector('#v_time').value);
@@ -232,7 +325,15 @@
                 position: "back",
             },
             dataLabels: {
-                enabled: false,
+                enabled: true, // Enable data labels
+                formatter: function (val) {
+                    return val + "s"; // Format the value to 2 decimal places
+                },
+                style: {
+                    fontSize: '12px', // Adjust font size
+                    colors: ["white"] // Adjust font color
+                },
+                offsetY: 0 // Adjust position of labels above the bars
             },
             chart: {
                 type: "bar",

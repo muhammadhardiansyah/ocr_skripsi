@@ -55,6 +55,7 @@
                                         <td class="col-3">
                                             <p>{{ \Illuminate\Support\Str::words($item->tesseract_text, 10, '...') }}</p>
                                             <p>{{ 'Waktu proses: ' . $item->tesseract_time . ' detik' }}</p>
+                                            <p>{{ 'Memory Usage: ' . $item->tesseract_memory . ' KB' }}</p>
                                             @if ($item->tesseract_percentage)
                                                 <p>{{ 'Tingkat kebenaran: ' . $item->tesseract_percentage . ' %' }}</p>
                                             @endif
@@ -62,6 +63,7 @@
                                         <td class="col-3">
                                             <p>{{ \Illuminate\Support\Str::words($item->vision_text, 10, '...') }}</p>
                                             <p>{{ 'Waktu proses: ' . $item->vision_time . ' detik' }}</p>
+                                            <p>{{ 'Memory Usage: ' . $item->vision_memory . ' KB' }}</p>
                                             @if ($item->vision_percentage)
                                                 <p>{{ 'Tingkat kebenaran: ' . $item->vision_percentage . ' %' }}</p>
                                             @endif
