@@ -46,13 +46,19 @@
                 <li class="sidebar-item  {{ $active == 'dash' ? 'active' : '' }}">
                     <a href="/" class='sidebar-link'>
                         <i class="bi bi-grid-fill"></i>
-                        <span>Dashboard</span>
+                        <span>Optical Character Recognition</span>
                     </a>
                 </li>
                 <li class="sidebar-item {{ $active == 'dash_result' ? 'active' : '' }}">
                     <a href="/result" class='sidebar-link'>
                         <i class="bi bi-grid-fill"></i>
                         <span>Hasil</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {{ $active == 'dash_resume' ? 'active' : '' }}">
+                    <a href="/resume" class='sidebar-link'>
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Resume</span>
                     </a>
                 </li>
 

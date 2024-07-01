@@ -132,12 +132,12 @@ class RecognitionController extends Controller
         $endMemory1      = memory_get_usage();
         $time       = $endTime - $startTime;
         $time       = round($time, 2);
-        $memory     = ($endMemory1 - $startMemory1)/1024;
+        $memory     = ($endMemory1 - $startMemory1) / 1024;
 
         return [
             'text' => $text,
             'time' => $time,
-            'memory'=> $memory
+            'memory' => $memory
         ];
     }
 
@@ -154,7 +154,7 @@ class RecognitionController extends Controller
         $endMemory2      = memory_get_usage();
         $time       = $endTime - $startTime;
         $time       = round($time, 2);
-        $memory     = ($endMemory2 - $startMemory2)/1024;
+        $memory     = ($endMemory2 - $startMemory2) / 1024;
 
         return [
             'text' => ($text->getTextAnnotations())[0]->getDescription(),
@@ -164,7 +164,7 @@ class RecognitionController extends Controller
     }
 
     //Compare text
-    private function compareText($tesseractText, $visionText ,$notepadContent)
+    private function compareText($tesseractText, $visionText, $notepadContent)
     {
         //normalize
         $tesseractText = str_replace(["\r\n", "\r", "\n"], ' ', $tesseractText);
@@ -187,12 +187,12 @@ class RecognitionController extends Controller
     public function downloadTesseract($id)
     {
         $recognition = Recognition::find($id);
-        $fileName = $recognition->name.'_tesseract.txt';
-        
+        $fileName = $recognition->name . '_tesseract.txt';
+
         // Buat file teks sementara
         $tempFile = tempnam(sys_get_temp_dir(), $fileName);
         file_put_contents($tempFile, $recognition->tesseract_text);
-        
+
         // Kembalikan file sebagai response unduhan
         return response()->download($tempFile, $fileName)->deleteFileAfterSend(true);
     }
@@ -201,12 +201,12 @@ class RecognitionController extends Controller
     public function downloadVision($id)
     {
         $recognition = Recognition::find($id);
-        $fileName = $recognition->name.'_vision.txt';
-        
+        $fileName = $recognition->name . '_vision.txt';
+
         // Buat file teks sementara
         $tempFile = tempnam(sys_get_temp_dir(), $fileName);
         file_put_contents($tempFile, $recognition->vision_text);
-        
+
         // Kembalikan file sebagai response unduhan
         return response()->download($tempFile, $fileName)->deleteFileAfterSend(true);
     }
@@ -214,9 +214,37 @@ class RecognitionController extends Controller
     //halaman resume
     public function resume()
     {
-        
+        $data = Recognition::whereNotNull('tesseract_percentage')->orWhereNotNull('vision_percentage')->get();
+
+
+        $name = $data->pluck('name')->toArray();
+        $t_percentage = $data->pluck('tesseract_percentage')->toArray();
+        $v_percentage = $data->pluck('vision_percentage')->toArray();
+        $t_percent_avg = $data->avg('tesseract_percentage');
+        $v_percent_avg = $data->avg('vision_percentage');
+        $t_time = $data->pluck('tesseract_time')->toArray();
+        $v_time = $data->pluck('vision_time')->toArray();
+        $t_time_avg = $data->avg('tesseract_time');
+        $v_time_avg = $data->avg('vision_time');
+        $t_memory = $data->pluck('tesseract_memory')->toArray();
+        $v_memory = $data->pluck('vision_memory')->toArray();
+        $t_memory_avg = $data->avg('tesseract_memory');
+        $v_memory_avg = $data->avg('vision_memory');
         return view('resume.index', [
-            'active' => 'dash_resume'
+            'active'        => 'dash_resume',
+            'name'          => compact('name'),
+            't_percentage'  => compact('t_percentage'),
+            'v_percentage'  => compact('v_percentage'),
+            't_percent_avg' => round($t_percent_avg, 2),
+            'v_percent_avg' => round($v_percent_avg, 2),
+            't_time'        => compact('t_time'),
+            'v_time'        => compact('v_time'),
+            't_time_avg'    => round($t_time_avg, 2),
+            'v_time_avg'    => round($v_time_avg, 2),
+            't_memory'        => compact('t_memory'),
+            'v_memory'        => compact('v_memory'),
+            't_memory_avg'    => round($t_memory_avg, 2),
+            'v_memory_avg'    => round($v_memory_avg, 2),
         ]);
     }
 }
