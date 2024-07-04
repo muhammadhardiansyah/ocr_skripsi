@@ -64,8 +64,8 @@
                         <form action="/result" method="post" enctype="multipart/form-data" id="uploadForm">
                             <!-- File uploader with validation -->
                             @csrf
-                            <input type="file" name="images[]" class="inputFile" required
-                                multiple data-max-file-size="5MB" data-max-files="20">
+                            <input type="file" name="images[]" class="inputFile" required multiple
+                                data-max-file-size="5MB" data-max-files="20">
                             <button type="submit" class="btn btn-success" id="startRecognition">
                                 <i class="bi bi-plus-square mr-1"></i>
                                 <span>Submit</span>
@@ -108,7 +108,11 @@
             allowMultiple: true,
             allowFileEncode: false,
             required: true,
-            acceptedFileTypes: ["image/png"],
+            acceptedFileTypes: [
+                "image/png",
+                "image/jpeg",
+                "image/jpg"
+            ],
             fileValidateTypeDetectType: (source, type) =>
                 new Promise((resolve, reject) => {
                     // Do custom type detection here and return with promise
@@ -125,8 +129,7 @@
             const noFiles = pond.getFiles().length === 0;
             if (noFiles || hasError) {
                 startRecognitionButton.disabled = true;
-            }
-            else {
+            } else {
                 startRecognitionButton.disabled = false;
             }
         }
