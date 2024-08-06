@@ -37,8 +37,6 @@ class RecognitionController extends Controller
      */
     public function store(Request $request)
     {
-        // dd((new TesseractOCR())->version());
-        // dd($request->file('images'));
         foreach ($request->file('images') as $image) {
             $name = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
             $validatedData['name'] = $name;
@@ -125,18 +123,18 @@ class RecognitionController extends Controller
     {
         set_time_limit(0);
         $imagePath  = public_path('storage/' . $path);
-        $startTime      = microtime(true);
+        $startTime1      = microtime(true);
         $startMemory1    = memory_get_usage();
         $text       = (new TesseractOCR($imagePath))->run();
-        $endTime        = microtime(true);
+        $endTime1        = microtime(true);
         $endMemory1      = memory_get_usage();
-        $time       = $endTime - $startTime;
-        $time       = round($time, 2);
+        $time1       = $endTime1 - $startTime1;
+        $time1       = round($time1, 2);
         $memory     = ($endMemory1 - $startMemory1) / 1024;
 
         return [
             'text' => $text,
-            'time' => $time,
+            'time' => $time1,
             'memory' => $memory
         ];
     }
@@ -144,21 +142,22 @@ class RecognitionController extends Controller
     //Google Vision Recognition Process
     public function visionProcess($path)
     {
+        set_time_limit(0);
         putenv('GOOGLE_APPLICATION_CREDENTIALS=' . storage_path('/app/token.json'));
         $imagePath  = public_path('storage/' . $path);
         $imageContent = file_get_contents($imagePath);
-        $startTime      = microtime(true);
+        $startTime2      = microtime(true);
         $startMemory2    = memory_get_usage();
         $text       = (new ImageAnnotatorClient())->textDetection($imageContent);
-        $endTime        = microtime(true);
+        $endTime2        = microtime(true);
         $endMemory2      = memory_get_usage();
-        $time       = $endTime - $startTime;
-        $time       = round($time, 2);
+        $time2       = $endTime2 - $startTime2;
+        $time2       = round($time2, 2);
         $memory     = ($endMemory2 - $startMemory2) / 1024;
 
         return [
             'text' => ($text->getTextAnnotations())[0]->getDescription(),
-            'time' => $time,
+            'time' => $time2,
             'memory' => $memory
         ];
     }
@@ -214,7 +213,7 @@ class RecognitionController extends Controller
     //halaman resume
     public function resume()
     {
-        $data = Recognition::whereNotNull('tesseract_percentage')->orWhereNotNull('vision_percentage')->get();
+        $data = Recognition::whereNotNull('tesseract_percentage')->orWhereNotNull('vision_percentage')->latest()->get();
 
 
         $name = $data->pluck('name')->toArray();
